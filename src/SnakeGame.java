@@ -1,5 +1,8 @@
 import javafx.animation.*;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableSet;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
@@ -31,7 +34,6 @@ public class SnakeGame extends Application {
     Canvas canvas;
 
 
-
     private ImageView apple;
     private ImageView snakeHead;
     private ImageView part;
@@ -47,13 +49,8 @@ public class SnakeGame extends Application {
     private int applePosX = 70;
     private int applePosY = 70;
 
-    private Direction currentDir = Direction.RIGHT;
 
 
-
-    public enum Direction{
-        LEFT, RIGHT, UP, DOWN
-    }
 
 
     public void loadIcon(){
@@ -73,14 +70,6 @@ public class SnakeGame extends Application {
         snakeHead.setSmooth(true);
         snakeHead.setLayoutX(0);
         snakeHead.setLayoutY(snakePosY);
-
-        /*snakePart = new ImageView("images/snakePart.png");
-        snakePart.setFitWidth(snakeWidth);
-        snakePart.setFitHeight(snakeHeight);
-        snakePart.setPreserveRatio(true);
-        snakePart.setSmooth(true);
-        snakePart.setLayoutX(80);
-        snakePart.setLayoutY(75);*/
 
         snakePart = new ArrayList<>();
         part = new ImageView("images/snakePart.png");
@@ -110,10 +99,40 @@ public class SnakeGame extends Application {
 
 
     public void moveSnake(){
+       double currentPOS = snakeHead.getTranslateX();
+        Bounds bounds = canvas.getBoundsInLocal();
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+            @Override
+            public void handle(KeyEvent event) {
+
+
+                if(event.getCode() == KeyCode.DOWN) {
+                    timer = new AnimationTimer(){
+
+                        @Override
+                        public void handle(long now) {
+                            //System.out.println("moving diver right!");
+                            snakeHead.setTranslateX(currentPOS);
+                            snakeHead.setTranslateY(snakeHead.getTranslateY() + 2);
 
 
 
+                        }
 
+
+                    };
+                    timer.start();
+
+                }
+                else if(event.getCode() == KeyCode.SPACE) {
+                    //your code for shooting the missile
+                }
+
+            }
+
+        });
+        animationTimer();
     }
 
     public void animationTimer(){
@@ -121,22 +140,16 @@ public class SnakeGame extends Application {
         timer = new AnimationTimer(){
             @Override
             public void handle(long now) {
-                //System.out.println("moving diver right!");
 
                 snakeHead.setTranslateX(snakeHead.getTranslateX() + 2);
-                //part.setX(part.getX() + 2.5);
 
-                if (snakeHead.getTranslateX() > (bounds.getMaxX() - snakeWidth) ){
+                /*if (snakeHead.getTranslateX() > (bounds.getMaxX() - snakeWidth) ){
                     snakeHead.setTranslateX(0);
-                }
-                //yourImageView.setY(yourImageView.getY() + 20.0 );
+                }*/
 
             }
 
-
         };
-
-
         timer.start();
     }
 
@@ -166,7 +179,7 @@ public class SnakeGame extends Application {
         addSnakeParts();
         //initSnakeGame();
         moveSnake();
-        animationTimer();
+        //animationTimer();
 
 
 
