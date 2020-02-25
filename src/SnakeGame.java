@@ -44,13 +44,23 @@ public class SnakeGame extends Application {
     private int snakePosX = 250;
     private int snakePosY = 250;
     private int snakeGap = 15;
+    private int snakeSpeed = 2;
 
     private ArrayList<ImageView> snakePart;
 
     private int applePosX = 70;
     private int applePosY = 70;
 
+    static Directions currentDir = Directions.RIGHT;
 
+    public enum Directions {
+        UP,
+        DOWN,
+        RIGHT,
+        LEFT
+
+
+    }
 
 
 
@@ -101,100 +111,53 @@ public class SnakeGame extends Application {
 
     public void moveSnake(){
 
-        Bounds bounds = canvas.getBoundsInLocal();
+        switch (currentDir) {
+            case RIGHT:
 
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+                snakeHead.setX(snakeHead.getX() + snakeSpeed);
+                break;
 
-            @Override
-            public void handle(KeyEvent event) {
-                double currentPosX = snakeHead.getTranslateX();
-                double currentPosY = snakeHead.getTranslateY();
+            case LEFT:
+                snakeHead.setX(snakeHead.getX() - snakeSpeed);
+                break;
+
+            case UP:
+                snakeHead.setY(snakeHead.getY() - snakeSpeed);
+                break;
+
+            case DOWN:
+                snakeHead.setY(snakeHead.getY() + snakeSpeed);
+                break;
+        }
 
 
 
-                if(event.getCode() == KeyCode.DOWN) {
-
-                    timer = new AnimationTimer(){
-
-                        @Override
-                        public void handle(long now) {
-
-                            snakeHead.setTranslateY(snakeHead.getTranslateY() + 2);
-                            snakeHead.setTranslateX(currentPosX);
-
-                        }
-
-                    };
-                    timer.start();
-
-                }
-                else if(event.getCode() == KeyCode.RIGHT) {
-
-                    timer = new AnimationTimer(){
-
-                        @Override
-                        public void handle(long now) {
-                            animationTimer();
-                            snakeHead.setTranslateY(currentPosY);
-                        }
-
-                    };
-                    timer.start();
-
-                }else if (event.getCode() == KeyCode.UP){
-                    timer = new AnimationTimer(){
-
-                        @Override
-                        public void handle(long now) {
-
-                            snakeHead.setTranslateY(snakeHead.getTranslateY() - 2);
-                            snakeHead.setTranslateX(currentPosX);
-                        }
-
-                    };
-                    timer.start();
-
-                }else if (event.getCode() == KeyCode.LEFT){
-                    timer = new AnimationTimer(){
-
-                        @Override
-                        public void handle(long now) {
-                            snakeHead.setTranslateX(snakeHead.getTranslateX() - 2);
-                            snakeHead.setTranslateY(currentPosY);
-
-                        }
-
-                    };
-                    timer.start();
-                }
-
-            }
-
-        });
-
-        animationTimer();
-    }
-
-    public void animationTimer(){
-        Bounds bounds = canvas.getBoundsInLocal();
-        timer = new AnimationTimer(){
-            @Override
-            public void handle(long now) {
-
-                snakeHead.setTranslateX(snakeHead.getTranslateX() + 2);
-
-                /*if (snakeHead.getTranslateX() > (bounds.getMaxX() - snakeWidth) ){
-                    snakeHead.setTranslateX(0);
-                }*/
-
-            }
-
-        };
-        timer.start();
     }
 
     public void snakeDirections(){
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, key -> {
+            if (key.getCode() == KeyCode.UP) {
+                currentDir = Directions.UP;
+            } else if (key.getCode() == KeyCode.DOWN) {
+                currentDir = Directions.DOWN;
 
+            } else if (key.getCode() == KeyCode.LEFT) {
+                currentDir = Directions.LEFT;
+
+            } else if (key.getCode() == KeyCode.RIGHT) {
+                currentDir = Directions.RIGHT;
+
+            }
+        });
+    }
+
+    public void animationTimer(){
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                moveSnake();
+            }
+        };timer.start();
     }
 
     @Override
@@ -217,9 +180,8 @@ public class SnakeGame extends Application {
 
         loadIcon();
         addSnakeParts();
-        //initSnakeGame();
-        moveSnake();
-        //animationTimer();
+        snakeDirections();
+        animationTimer();
 
 
 
