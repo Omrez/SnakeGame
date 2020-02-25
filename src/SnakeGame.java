@@ -31,6 +31,7 @@ public class SnakeGame extends Application {
     GraphicsContext gc;
     Scene scene;
     AnimationTimer timer;
+    AnimationTimer startDir;
     Canvas canvas;
 
 
@@ -99,39 +100,78 @@ public class SnakeGame extends Application {
 
 
     public void moveSnake(){
-       double currentPOS = snakeHead.getTranslateX();
+
         Bounds bounds = canvas.getBoundsInLocal();
+
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
             @Override
             public void handle(KeyEvent event) {
+                double currentPosX = snakeHead.getTranslateX();
+                double currentPosY = snakeHead.getTranslateY();
+
 
 
                 if(event.getCode() == KeyCode.DOWN) {
+
                     timer = new AnimationTimer(){
 
                         @Override
                         public void handle(long now) {
-                            //System.out.println("moving diver right!");
-                            snakeHead.setTranslateX(currentPOS);
+
                             snakeHead.setTranslateY(snakeHead.getTranslateY() + 2);
-
-
+                            snakeHead.setTranslateX(currentPosX);
 
                         }
-
 
                     };
                     timer.start();
 
                 }
-                else if(event.getCode() == KeyCode.SPACE) {
-                    //your code for shooting the missile
+                else if(event.getCode() == KeyCode.RIGHT) {
+
+                    timer = new AnimationTimer(){
+
+                        @Override
+                        public void handle(long now) {
+                            animationTimer();
+                            snakeHead.setTranslateY(currentPosY);
+                        }
+
+                    };
+                    timer.start();
+
+                }else if (event.getCode() == KeyCode.UP){
+                    timer = new AnimationTimer(){
+
+                        @Override
+                        public void handle(long now) {
+
+                            snakeHead.setTranslateY(snakeHead.getTranslateY() - 2);
+                            snakeHead.setTranslateX(currentPosX);
+                        }
+
+                    };
+                    timer.start();
+
+                }else if (event.getCode() == KeyCode.LEFT){
+                    timer = new AnimationTimer(){
+
+                        @Override
+                        public void handle(long now) {
+                            snakeHead.setTranslateX(snakeHead.getTranslateX() - 2);
+                            snakeHead.setTranslateY(currentPosY);
+
+                        }
+
+                    };
+                    timer.start();
                 }
 
             }
 
         });
+
         animationTimer();
     }
 
