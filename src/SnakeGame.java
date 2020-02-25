@@ -51,16 +51,9 @@ public class SnakeGame extends Application {
     private int applePosX = 70;
     private int applePosY = 70;
 
-    static Directions currentDir = Directions.RIGHT;
-
-    public enum Directions {
-        UP,
-        DOWN,
-        RIGHT,
-        LEFT
+    private Directions currentDir = Directions.RIGHT;
 
 
-    }
 
 
 
@@ -111,23 +104,14 @@ public class SnakeGame extends Application {
 
     public void moveSnake(){
 
-        switch (currentDir) {
-            case RIGHT:
-
-                snakeHead.setX(snakeHead.getX() + snakeSpeed);
-                break;
-
-            case LEFT:
-                snakeHead.setX(snakeHead.getX() - snakeSpeed);
-                break;
-
-            case UP:
-                snakeHead.setY(snakeHead.getY() - snakeSpeed);
-                break;
-
-            case DOWN:
-                snakeHead.setY(snakeHead.getY() + snakeSpeed);
-                break;
+        if (currentDir == Directions.RIGHT) {
+            snakeHead.setX(snakeHead.getX() + snakeSpeed);
+        } else if (currentDir == Directions.LEFT) {
+            snakeHead.setX(snakeHead.getX() - snakeSpeed);
+        } else if (currentDir == Directions.UP) {
+            snakeHead.setY(snakeHead.getY() - snakeSpeed);
+        } else if (currentDir == Directions.DOWN) {
+            snakeHead.setY(snakeHead.getY() + snakeSpeed);
         }
 
 
