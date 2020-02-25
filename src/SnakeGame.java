@@ -31,7 +31,6 @@ public class SnakeGame extends Application {
     GraphicsContext gc;
     Scene scene;
     AnimationTimer timer;
-    AnimationTimer startDir;
     Canvas canvas;
 
 
@@ -44,7 +43,7 @@ public class SnakeGame extends Application {
     private int snakePosX = 250;
     private int snakePosY = 250;
     private int snakeGap = 15;
-    private int snakeSpeed = 2;
+    private double snakeSpeed = 2.5;
 
     private ArrayList<ImageView> snakePart;
 
@@ -72,7 +71,7 @@ public class SnakeGame extends Application {
         snakeHead.setFitHeight(snakeHeight);
         snakeHead.setPreserveRatio(true);
         snakeHead.setSmooth(true);
-        snakeHead.setLayoutX(0);
+        snakeHead.setLayoutX(snakePosX);
         snakeHead.setLayoutY(snakePosY);
 
         snakePart = new ArrayList<>();
@@ -114,29 +113,29 @@ public class SnakeGame extends Application {
             snakeHead.setY(snakeHead.getY() + snakeSpeed);
         }
 
-
-
     }
 
     public void snakeDirections(){
+
         scene.addEventFilter(KeyEvent.KEY_PRESSED, key -> {
-            if (key.getCode() == KeyCode.UP) {
+            if (key.getCode() == KeyCode.UP && currentDir != Directions.DOWN) {
                 currentDir = Directions.UP;
-            } else if (key.getCode() == KeyCode.DOWN) {
+
+            } else if (key.getCode() == KeyCode.DOWN && currentDir != Directions.UP) {
                 currentDir = Directions.DOWN;
 
-            } else if (key.getCode() == KeyCode.LEFT) {
+            } else if (key.getCode() == KeyCode.LEFT && currentDir != Directions.RIGHT) {
                 currentDir = Directions.LEFT;
 
-            } else if (key.getCode() == KeyCode.RIGHT) {
+            } else if (key.getCode() == KeyCode.RIGHT && currentDir != Directions.LEFT) {
                 currentDir = Directions.RIGHT;
-
             }
         });
     }
 
     public void animationTimer(){
-        AnimationTimer timer = new AnimationTimer() {
+
+        timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 moveSnake();
@@ -161,6 +160,8 @@ public class SnakeGame extends Application {
         primaryStage.setTitle("Snake Game");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        // Methods
 
         loadIcon();
         addSnakeParts();
