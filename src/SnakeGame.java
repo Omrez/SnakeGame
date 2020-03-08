@@ -61,7 +61,8 @@ public class SnakeGame extends Application {
     private int snakeGap = 15;
     private double snakeSpeed = 13;
 
-    private ArrayList<SnakeTail> tails = new ArrayList<>();
+    private SnakeParts sp;
+    private SnakeParts sp1;
 
     private int applePosX, applePosY;
     private Clip clip;
@@ -85,6 +86,7 @@ public class SnakeGame extends Application {
         //gameOver.setVisible(false);
         //newGame.setVisible(false);
         timer.stop();
+        root.getChildren().removeAll(sp,sp1);
         //applePosRan.stop();
 
 
@@ -105,6 +107,7 @@ public class SnakeGame extends Application {
             pauseGame.setVisible(true);
             timer.start();
             //applePosRan.play();
+            root.getChildren().addAll(sp,sp1);
 
             startGame.setVisible(false);
             //rotateGame();
@@ -121,6 +124,14 @@ public class SnakeGame extends Application {
         pauseGame.setSmooth(true);
         pauseGame.setLayoutX(20);
         pauseGame.setLayoutY(-4);
+
+        pauseGame.setOnMouseClicked((e) -> {
+            applePosRan.pause();
+            timer.stop();
+
+            pauseGame.setVisible(false);
+            contin.setVisible(true);
+        });
     }
 
     public void contin(){
@@ -131,6 +142,15 @@ public class SnakeGame extends Application {
         contin.setSmooth(true);
         contin.setLayoutX(20);
         contin.setLayoutY(6);
+
+        contin.setOnMouseClicked((e) -> {
+            applePosRan.play();
+            timer.start();
+
+            pauseGame.setVisible(true);
+            contin.setVisible(false);
+        });
+
     }
 
 
@@ -165,10 +185,10 @@ public class SnakeGame extends Application {
 
     public void initSnakeParts(){
 
-        SnakeParts sp = new SnakeParts(350,320);
+        sp = new SnakeParts(350,320);
         snake.add(sp);
 
-        SnakeParts sp1 = new SnakeParts(350,320);
+        sp1 = new SnakeParts(350,320);
         snake.add(sp1);
 
 
@@ -216,10 +236,9 @@ public class SnakeGame extends Application {
 
     public void snakeBorderCollision(){
 
-        if( snakeHead.getX() >= sceneWidth-snakeWidth)
+        if(snakeHead.getX() >= sceneWidth-snakeWidth)
         {
-            gameOver();
-            applePosRan.stop();
+            System.out.println("BORDER HIT");
         }
 
     }
@@ -228,8 +247,8 @@ public class SnakeGame extends Application {
 
         if(snakeHead.getBoundsInParent().intersects(apple.getBoundsInParent())) {
             System.out.println("Collission detected");
-            locateApple();
             addSnakePart();
+            locateApple();
 
             score += 10;
             scoreLabel.setText("Score: " + score);
@@ -237,7 +256,7 @@ public class SnakeGame extends Application {
             if(score == 70) {
                 snakeHead.setFitWidth(26);
                 snakeHead.setFitHeight(26);
-            } else if (score == 120) {
+            } else if (score == 110) {
                 snakeHead.setFitWidth(snakeWidth);
                 snakeHead.setFitHeight(snakeHeight);
             }
@@ -247,9 +266,13 @@ public class SnakeGame extends Application {
 
     public void rotateGame(){
 
+        if (score == 50){
+
         RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.5),root);
         rotateTransition.setToAngle(90);
         rotateTransition.play();
+
+        }
 
 
     }
@@ -259,11 +282,7 @@ public class SnakeGame extends Application {
 
         snakeAppleColission();
 
-
-
         for (int i = snake.size()-1; i >= 0 ; i--) {
-
-            System.out.println(i);
 
             if ( i > 0 ){
                 snake.get(i).setX(snake.get(i-1).getX());
@@ -314,17 +333,14 @@ public class SnakeGame extends Application {
             @Override
             public void handle(long now) {
 
-                if(now  - lastup >= 100000000) {
+                if(now  - lastup >= 90000000) {
 
                     moveSnake();
                     snakeBorderCollision();
-
                     lastup = now;
-
                 }
             }
-        };
-        timer.start();
+        };timer.start();
 
     }
 
@@ -399,7 +415,7 @@ public class SnakeGame extends Application {
         scene = new Scene(root, sceneWidth, sceneHeight, Color.web("#1f1f1f"));
 
         pane = new Pane();
-        pane.setStyle("-fx-background-color: #ffecde");
+        //pane.setStyle("-fx-background-color: #ffecde");
         pane.setPrefWidth(sceneWidth);
         pane.setPrefHeight(30);
 
@@ -432,16 +448,17 @@ public class SnakeGame extends Application {
         snakeDirections();
         animationTimer();
         snakeBorderCollision();
+        rotateGame();
         //gameOver();
         //rotateGame();
 
         pauseGame();
         contin();
-        //gameMenu();
+        gameMenu();
 
 
 
-        root.getChildren().addAll(canvas,pane,scoreLabel,apple,snakeHead,pauseGame,contin);
+        root.getChildren().addAll(canvas,pane,scoreLabel,apple,snakeHead,startGame,pauseGame,contin);
     }
 
 

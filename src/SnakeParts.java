@@ -3,9 +3,6 @@ import javafx.scene.image.ImageView;
 
 public class SnakeParts extends ImageView {
 
-
-
-
     public SnakeParts(int x, int y) {
         this.setLayoutX(x);
         this.setLayoutY(y);
